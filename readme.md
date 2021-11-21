@@ -1,8 +1,8 @@
 ## DDD架构简要解析
 
-![image-20211121091800115](/Users/zhangtian/Documents/idea_workspace/dynamic-data/readme.assets/image-20211121091800115.png)
+![image-20211121091800115](https://github.com/shupingfu/dynamic-data/blob/architecture-ddd/readme.assets/image-20211121091800115.png?raw=true)
 
-![image-20211121091853047](/Users/zhangtian/Documents/idea_workspace/dynamic-data/readme.assets/image-20211121091853047.png)
+![image-20211121091853047](https://github.com/shupingfu/dynamic-data/blob/architecture-ddd/readme.assets/image-20211121091853047.png?raw=true)
 
  + User Interface : 2021.1.3版idea不允许创建带有`interface` 的包，遂改为`api`。
 
