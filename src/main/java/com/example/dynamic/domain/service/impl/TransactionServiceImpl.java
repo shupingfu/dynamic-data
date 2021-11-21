@@ -1,11 +1,11 @@
-package com.example.dynamic.service.impl;
+package com.example.dynamic.domain.service.impl;
 
-import com.example.dynamic.config.DynamicDataSource;
-import com.example.dynamic.entity.Article;
-import com.example.dynamic.entity.SysUser;
-import com.example.dynamic.mapper.IArticleDao;
-import com.example.dynamic.mapper.ISysUserDao;
-import com.example.dynamic.service.ITransactionService;
+import com.example.dynamic.application.config.DynamicDataSource;
+import com.example.dynamic.domain.entity.Article;
+import com.example.dynamic.domain.entity.SysUser;
+import com.example.dynamic.domain.mapper.IArticleDao;
+import com.example.dynamic.domain.mapper.ISysUserDao;
+import com.example.dynamic.domain.service.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

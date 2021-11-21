@@ -1,6 +1,6 @@
-package com.example.dynamic.service;
+package com.example.dynamic.domain.service;
 
-import com.example.dynamic.entity.SysUser;
+import com.example.dynamic.domain.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

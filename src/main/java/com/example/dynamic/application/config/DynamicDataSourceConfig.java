@@ -1,4 +1,4 @@
-package com.example.dynamic.config;
+package com.example.dynamic.application.config;
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import lombok.extern.slf4j.Slf4j;

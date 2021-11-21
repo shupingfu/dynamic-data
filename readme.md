@@ -1,227 +1,53 @@
-## 动态数据源111
+## DDD架构简要解析
 
+![image-20211121091800115](/Users/zhangtian/Documents/idea_workspace/dynamic-data/readme.assets/image-20211121091800115.png)
 
+![image-20211121091853047](/Users/zhangtian/Documents/idea_workspace/dynamic-data/readme.assets/image-20211121091853047.png)
 
-### 使用 `druid` 配合 `AbstractRoutingDataSource` 实现动态数据源
+ + User Interface : 2021.1.3版idea不允许创建带有`interface` 的包，遂改为`api`。
 
-1. 依赖
+ + 基于Application代码的抽象，适用于微服务项目。而普通分布式项目，或者单体架构项目，还是使用基于业务的分包更为一目了然。
 
-   ```xml
-           <!-- https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter -->
-           <dependency>
-               <groupId>com.alibaba</groupId>
-               <artifactId>druid-spring-boot-starter</artifactId>
-               <version>1.2.8</version>
-           </dependency>
-   				<dependency>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-web</artifactId>
-           </dependency>
-           <dependency>
-               <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-aop</artifactId>
-           </dependency>
-           <dependency>
-               <groupId>mysql</groupId>
-               <artifactId>mysql-connector-java</artifactId>
-               <scope>runtime</scope>
-           </dependency>
-           <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter -->
-           <dependency>
-               <groupId>com.baomidou</groupId>
-               <artifactId>mybatis-plus-boot-starter</artifactId>
-               <version>3.4.3.4</version>
-           </dependency>
-   ```
+ + `高内聚低耦合` 。选择代码内聚，业务可能会耦合；选择业务内聚，代码可能会耦合，二者只得其一。DDD架构在微服务本身已经有了基于业务解耦的基础之上，再对本身的代码进行解耦，是比较合适的。
 
-2. 配置类:`DynamicDataSource` , `DynamicDataSourceConfig` , `DynamicDataSourceAOP` 。
+ + [相关书]( https://github.com/backstudy/bookrack/blob/master/IntelliJ%20IDEA%20%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%E4%B8%93%E9%A2%98%E6%95%99%E7%A8%8B%EF%BC%88%E7%94%B5%E5%AD%90%E7%89%88-2015%EF%BC%89.CHM)
 
-   ```java
-   /**
-    * 动态数据源
-    */
-   @Slf4j
-   public class DynamicDataSource extends AbstractRoutingDataSource {
    
-       private static final ThreadLocal<String> CONTEXT_HOLDER = new ThreadLocal<>();
-   
-       public static final String DB_SCHEMA1 = "SCHEMA1";
-       public static final String DB_SCHEMA2 = "SCHEMA2";
-   
-       @Override
-       protected Object determineCurrentLookupKey() {
-           log.info("切换数据源:{}", getDataSource());
-           return getDataSource();
-       }
-   
-       public static String getDataSource() {
-           return CONTEXT_HOLDER.get();
-       }
-   
-       public static void setDataSource(String datasource) {
-           CONTEXT_HOLDER.set(datasource);
-       }
-   
-       public static void clearDataSource() {
-           CONTEXT_HOLDER.remove();
-       }
-   
-   }
-   ```
 
-   ```java
-   /**
-    * 动态数据源配置
-    */
-   @Slf4j
-   @Configuration
-   public class DynamicDataSourceConfig {
-   
-       @Bean
-       @ConfigurationProperties(prefix = "spring.datasource.schema1")
-       public DataSource schema1() {
-           return DruidDataSourceBuilder.create().build();
-       }
-   
-       @Bean
-       @ConfigurationProperties(prefix = "spring.datasource.schema2")
-       public DataSource schema2() {
-           return DruidDataSourceBuilder.create().build();
-       }
-   
-       @Bean
-       @Primary
-       public DynamicDataSource dynamicDataSource(DataSource schema1, DataSource schema2) {
-           ConcurrentHashMap<Object, Object> map = new ConcurrentHashMap<>(2);
-           map.put(DynamicDataSource.DB_SCHEMA1, schema1);
-           map.put(DynamicDataSource.DB_SCHEMA2, schema2);
-   
-           DynamicDataSource dynamicDataSource = new DynamicDataSource();
-           dynamicDataSource.setDefaultTargetDataSource(schema1);
-           dynamicDataSource.setTargetDataSources(map);
-           dynamicDataSource.afterPropertiesSet();
-           return dynamicDataSource;
-       }
-   
-   }
-   ```
-
-   ```java
-   /**
-    * 切面管理线程绑定的数据源信息
-    */
-   @Slf4j
-   @Component
-   @Aspect
-   @Order(1)
-   public class DynamicDataSourceAOP {
-   
-       //execution(modifiers-pattern? ret-type-pattern declaring-type-pattern? name-pattern(param-pattern) throws-pattern?)
-       //execution(修饰符匹配式? 返回类型匹配式 类名匹配式? 方法名匹配式(参数匹配式) 异常匹配式?)  
-       // 带问号可以为空不配置。execution 后面描述的是精确到的方法的信息
-       // * 单词通配符 .. 一个或多个内容
-       @Pointcut("execution(public * com.example.dynamic.controller..*(..))")
-       public void pointCut() {
-       }
-   
-       @After("pointCut()")
-       public void after() {
-           DynamicDataSource.clearDataSource();
-           log.info("清理线程绑定的数据源数据。");
-       }
-   
-   }
-   ```
-
-3. 使用：
-
-   用 `DynamicDataSource.setDataSource(DynamicDataSource.SCHEMA2)` 来切换不同的数据源。加入事务时，切换不生效。
-
-
-
-### 动态数据源的事务管理
+## 线程池，多线程异步执行
 
 ```java
- @Override
-    @Transactional // 同一个数据源才有事务，不同数据源会导致切换数据库失败
-    public boolean test() {
-        DynamicDataSource.setDataSource(DynamicDataSource.DB_SCHEMA2);
-        // insert article
-        int result1 = iArticleDao.insert(Article.builder().date(new Date()).author("xiaoqi").title("tt").build());
+public static void main(String[] args) throws ExecutionException, InterruptedException {
+        //runAsync方法不支持返回值。
+        //supplyAsync可以支持返回值。
 
-        // insert sysUser
-//        DynamicDataSource.setDataSource(DynamicDataSource.DB_SCHEMA2);
-        int result2 = iSysUserDao.insert(SysUser.builder().username("xiaoqi").password("123456").build());
+        // 创建线程池
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(2,
+                5,
+                15,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(5),
+                new ThreadPoolExecutor.CallerRunsPolicy());
 
-        // error
-//        int i = 6 / 0;
-        return true;
+        // 并发异步执行
+        CompletableFuture<String> completableFuture1 = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread().getName() + "执行任务");
+            return "completableFuture1";
+        }, poolExecutor);
+
+        CompletableFuture<String> completableFuture2 = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread().getName() + "执行任务");
+            return "completableFuture1";
+        }, poolExecutor);
+
+        // 接受异步执行的结果
+        // CompletableFuture.allOf(..) 等待runAsync完成
+        // CompletableFuture.anyOf(..) supplyAsync 任意一个完成时都返回。
+        System.out.println(completableFuture1.get());
+        System.out.println(completableFuture2.get());
+        // 关闭线程池
+        poolExecutor.shutdown();
     }
 ```
 
-* 使用事务注解，schema1插入article，schema1插入sysUser，可回滚。
-* 使用事务注解，schema1插入article，schema2插入sysUser，切库失败，sysUser插入到schema1，事务也是schema1的。
-* 使用事务注解，schema2插入article，schema2插入sysUser，可回滚。
-* 不使用事务注解，可随意切库。
-
-
-
-
-
-###  `mybaits-plus-generator` 使用
-
-文档地址：https://baomidou.com/guide/generator-new.html
-
-#### 依赖
-
-```xml
-        <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-generator -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-generator</artifactId>
-            <version>3.5.1</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.quhaodian/freemaker -->
-        <dependency>
-            <groupId>com.quhaodian</groupId>
-            <artifactId>freemaker</artifactId>
-            <version>1.8.1</version>
-        </dependency>
-```
-
-
-
-#### 代码实现
-
-```java
-    public static void main(String[] args) {
-        FastAutoGenerator.create(url, userName, password)
-                .globalConfig(builder -> {
-                    builder.author("xiaoqi") // 设置作者
-//                            .enableSwagger() // 开启 swagger 模式
-                            .fileOverride() // 覆盖已生成文件
-                            .outputDir("项目绝对路径/src/main/java"); // 指定输出目录
-                })
-                .packageConfig(builder -> {
-                    builder.parent("com.example.dynamic")
-                            .entity("entity")
-                            .service("service")
-                            .serviceImpl("service.impl")
-                            .mapper("mapper")
-//                            .mapperXml("mapper.xml")
-//                            .controller("controller")
-//                            .other("other")
-                            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "项目绝对路径/src/main/resources/mapper"))
-                            .build();
-                })
-                .strategyConfig(builder -> {
-                    builder.addInclude("sys_user"); // 设置需要生成的表名
-//                            .addTablePrefix("t_", "c_"); // 设置过滤表前缀
-                })
-                .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板，需要自己导入
-                .execute();
-    }
-```
-
-
-
++ 整合`spring boot`， 可以将线程池配置`@Bean` 注解载入IOC容器，用到时取出。

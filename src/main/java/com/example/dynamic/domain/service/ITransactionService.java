@@ -1,4 +1,4 @@
-package com.example.dynamic.service;
+package com.example.dynamic.domain.service;
 
 public interface ITransactionService {
 

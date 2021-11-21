@@ -1,8 +1,8 @@
-package com.example.dynamic.service.impl;
+package com.example.dynamic.domain.service.impl;
 
-import com.example.dynamic.entity.SysUser;
-import com.example.dynamic.mapper.ISysUserDao;
-import com.example.dynamic.service.ISysUserService;
+import com.example.dynamic.domain.entity.SysUser;
+import com.example.dynamic.domain.mapper.ISysUserDao;
+import com.example.dynamic.domain.service.ISysUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

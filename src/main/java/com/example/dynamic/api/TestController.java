@@ -1,8 +1,8 @@
-package com.example.dynamic.controller;
+package com.example.dynamic.api;
 
-import com.example.dynamic.config.DynamicDataSource;
-import com.example.dynamic.mapper.IArticleDao;
-import com.example.dynamic.service.IArticleService;
+import com.example.dynamic.application.config.DynamicDataSource;
+import com.example.dynamic.domain.mapper.IArticleDao;
+import com.example.dynamic.domain.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

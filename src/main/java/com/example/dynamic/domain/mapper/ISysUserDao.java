@@ -1,6 +1,6 @@
-package com.example.dynamic.mapper;
+package com.example.dynamic.domain.mapper;
 
-import com.example.dynamic.entity.SysUser;
+import com.example.dynamic.domain.entity.SysUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

@@ -1,7 +1,7 @@
-package com.example.dynamic.controller;
+package com.example.dynamic.api;
 
 
-import com.example.dynamic.service.ITransactionService;
+import com.example.dynamic.domain.service.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
