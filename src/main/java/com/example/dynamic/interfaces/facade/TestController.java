@@ -1,6 +1,6 @@
-package com.example.dynamic.api;
+package com.example.dynamic.interfaces.facade;
 
-import com.example.dynamic.application.config.DynamicDataSource;
+import com.example.dynamic.infrastructure.config.DynamicDataSource;
 import com.example.dynamic.domain.mapper.IArticleDao;
 import com.example.dynamic.domain.service.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;

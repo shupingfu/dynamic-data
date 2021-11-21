@@ -1,6 +1,6 @@
 package com.example.dynamic.domain.service.impl;
 
-import com.example.dynamic.application.config.DynamicDataSource;
+import com.example.dynamic.infrastructure.config.DynamicDataSource;
 import com.example.dynamic.domain.entity.Article;
 import com.example.dynamic.domain.entity.SysUser;
 import com.example.dynamic.domain.mapper.IArticleDao;

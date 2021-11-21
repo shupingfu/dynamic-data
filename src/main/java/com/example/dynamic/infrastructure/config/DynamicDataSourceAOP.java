@@ -1,4 +1,4 @@
-package com.example.dynamic.application.config;
+package com.example.dynamic.infrastructure.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.After;

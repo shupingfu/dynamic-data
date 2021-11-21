@@ -4,7 +4,33 @@
 
 ![image-20211121091853047](https://github.com/shupingfu/dynamic-data/blob/architecture-ddd/readme.assets/image-20211121091853047.png?raw=true)
 
- + User Interface : 2021.1.3版idea不允许创建带有`interface` 的包，遂改为`api`。
+
+
+```
+├── application // 应用层
+│   ├── publish // 应用之间的发布/订阅
+│   └── subscribe
+├── domain // 领域层
+│   ├── entity
+│   ├── mapper
+│   ├── repository 
+│   └── service
+│       └── impl
+├── infrastructure // 基础设施层
+│   ├── cache 
+│   ├── config // 系统配置
+│   ├── constants
+│   └── util
+└── interfaces // 用户界面/展示层
+    ├── assembler // 对象转换或者其他
+    ├── dto
+    ├── facade // 前端借口
+    └── rpc // 模块之间调用
+```
+
+
+
+ + User Interface : 2021.1.3版idea不允许创建带有`interface` 的包，遂改为`interfaces`。
 
  + 基于Application代码的抽象，适用于微服务项目。而普通分布式项目，或者单体架构项目，还是使用基于业务的分包更为一目了然。
 
