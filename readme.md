@@ -36,7 +36,8 @@
 
  + `高内聚低耦合` 。选择代码内聚，业务可能会耦合；选择业务内聚，代码可能会耦合，二者只得其一。DDD架构在微服务本身已经有了基于业务解耦的基础之上，再对本身的代码进行解耦，是比较合适的。
 
- + [相关书](https://github.com/backstudy/bookrack/blob/master/DDD(%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1)-%E7%B2%BE%E7%AE%80%E7%89%88.pdf)
+ + [相关书1](https://github.com/backstudy/bookrack/blob/master/DDD(%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1)-%E7%B2%BE%E7%AE%80%E7%89%88.pdf)
+ + [相关书2](https://github.com/RongleXie/java-books-collections)
 
    
 
